@@ -4,6 +4,14 @@ import sqlite3
 from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
+    '''
+    This function is to load the data, messages & categories
+    INPUT: 
+        messages_filepath : Path for messages file
+        categories_filepath Path for categories file
+    OUTPUT: 
+        df : A pandas DataFrame that contains messages & categories combined
+    '''
     # load messages
     messages = pd.read_csv(messages_filepath)
     #load categories
@@ -13,19 +21,31 @@ def load_data(messages_filepath, categories_filepath):
     
     return df
 def clean_data(df):
+    '''
+    This function is to cleanse the data, specifically categories
+    INPUT: 
+        df : A pandas DataFrame that contains messages & categories combined
+    OUTPUT: 
+        df : A pandas DataFrame that contains messages & categories combined cleansed and prepared
+    '''
     # take categories & IDs
     categories = df[['id','categories']]
+    
     #Split categories into separate category columns.
     categories_splitted = categories.categories.str.split(pat=';',
                                                       expand=True)
+    
     # create a dataframe of the 36 individual category columns
     categories = pd.DataFrame(data=categories_splitted.values,
                               index=categories.id)
     categories.reset_index(inplace=True)
+    
     # extract a list of new column names for categories.
     category_colnames = [i.split('-')[0] for i in categories_splitted.head(1).values[0,0:]]
+    
     # rename the columns of `categories`
     categories.columns = ['id'] + category_colnames
+    
     # Convert category values to just numbers 0 or 1
     for column in categories.columns[1:]:#without the id column
         # set each value to be the last character of the string
@@ -36,6 +56,7 @@ def clean_data(df):
     #Replace categories column in df with new category columns.
     # drop the original categories column from `df
     df.drop(axis='columns',columns='categories',inplace=True)
+    
     # concatenate the original dataframe with the new `categories` dataframe
     df = pd.merge(left=df,right=categories)
 
@@ -44,6 +65,15 @@ def clean_data(df):
     
     return df
 def save_data(df, database_filename):
+    '''
+    This function is to save the data into an sqlite database table
+    INPUT: 
+        df : A pandas DataFrame that contains messages & categories combined and cleansed
+        database_filename: The table name the results will be saved at 
+    OUTPUT: 
+         None
+    '''
+    
     # Save the clean dataset into an sqlite database.
     engine = create_engine('sqlite:///' + database_filename)
     

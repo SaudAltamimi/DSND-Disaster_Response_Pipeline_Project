@@ -1,5 +1,12 @@
 # Disaster Response Pipeline Project
 
+## Summary: 
+
+In the Project, you'll find a data set containing real messages that were sent during disaster events. we will be creating a machine learning pipeline to categorize these events so that you can send the messages to an appropriate disaster relief agency.
+
+The project include a web app where an emergency worker can input a new message and get classification results in several categories. The web app will also display visualizations of the data. 
+
+
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
 
@@ -12,3 +19,36 @@
     `python run.py`
 
 3. Go to http://0.0.0.0:3001/
+
+
+## Files: 
+
+* Data : Contains all files used to cleanse & prepare the data.
+* Models : Contains all files used to build & save the classifier model.
+* App : A simple web app to interact with & use the predictive model.
+* DisasterResponse.db : An SQLlite Database which contains the prepared data.
+* requirements.txt : All libraries and dependencies that existed while building the project.
+
+
+# Project Components
+There are three components you'll need to complete for this project.
+
+### 1. ETL Pipeline
+In a Python script, process_data.py, the data cleaning pipeline will:
+
+- Loads the messages and categories datasets
+- Merges the two datasets
+- Cleans the data
+- Stores it in a SQLite database
+
+### 2. ML Pipeline
+In a Python script, train_classifier.py, the machine learning pipeline will:
+
+- Loads data from the SQLite database
+- Splits the dataset into training and test sets
+- Builds a text processing and machine learning pipeline
+- Trains and tunes a model using GridSearchCV
+- Outputs results on the test set
+- Exports the final model as a pickle file
+
+### 3. Flask Web App

@@ -30,6 +30,15 @@ from nltk.corpus import stopwords
 
 
 def load_data(database_filepath):
+    '''
+    A function to load our cleansed data from the database
+    INPUT: 
+        database_filename: The table name of the prepared data
+    OUTPUT: 
+         X : Messages data only
+         Y : Targets (binary output for each category)
+         category_names : Names of each feature in Y
+    '''
     # load data from database
     engine = create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql_table(table_name='FinalTable',
@@ -41,6 +50,16 @@ def load_data(database_filepath):
     return X, Y, category_names
 
 def tokenize(text):
+    '''
+    This function is to tokenize the messages in our data, it acts as a 
+    feature extractor to be used in training our model.
+    
+    INPUT: 
+        text: Raw text (message)
+    OUTPUT: 
+         clean_tokens : Text tokenized and prepared to be an input to our classifier
+         
+    '''
     # Normalize text
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
     
@@ -60,6 +79,13 @@ def tokenize(text):
 
 
 def build_model():
+    '''
+    This function is to build our multi-output classifier (binary outputs for each category)
+    INPUT: 
+        None
+    OUTPUT: 
+         pipepline : Our pipline model  
+    '''
     # choosing the model
     base_model = MultinomialNB()
     # making the base model multiclass predictor 
@@ -74,6 +100,19 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    '''
+    This function is to test our trained model, it will calculate 
+    the accuracy across all categories outputs
+    
+    INPUT: 
+        model : The trained model
+        X_test : Test features
+        Y_test : Test Targets 
+        category_names : Names of our targets
+    OUTPUT: 
+         An accuarcy results
+         
+    '''
     # model predictions 
     Y_pred = model.predict(X_test)
     # changing the structure output 
@@ -84,6 +123,17 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
+    '''
+    This function is to save the trained model to be deployed in production later 
+    
+    INPUT: 
+        model : The trained model
+        model_filepath : The path where you want to store the trained model
+        
+    OUTPUT: 
+         None
+         
+    '''
     import pickle
     # save the model to disk
     pickle.dump(model, open(model_filepath, 'wb'))
