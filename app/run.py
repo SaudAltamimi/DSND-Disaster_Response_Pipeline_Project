@@ -50,6 +50,13 @@ def index():
     category_counts = Y.sum()
     category_names = list(category_counts.index)
     
+    # data for the third graph
+    category_counts_by_genre = (df.iloc[:,~df.columns.isin(['id','message','original'])].
+                   groupby('genre').
+                   sum().
+                   stack())
+    category_names_by_genre = list(category_counts_by_genre.index)
+    
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
@@ -88,6 +95,24 @@ def index():
                 'yaxis': {
                     'title': "Counts"
                 }
+            }
+        },
+        {
+            'data': [Bar(y=category_counts_by_genre[genre],
+                         x=list(category_counts_by_genre[genre].index),
+                         name=genre) 
+                     for genre in genre_names],
+
+            'layout': {
+                'title': 'Distribution of Message Categories grouped by genre',
+                'xaxis': {
+                    'title': "Category by genre"
+                },
+                'yaxis': {
+                    'title': "Counts"
+                },
+                'barmode': 'stack'
+                ,
             }
         }
        

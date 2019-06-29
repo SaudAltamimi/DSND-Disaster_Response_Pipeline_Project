@@ -84,7 +84,7 @@ def build_model():
     INPUT: 
         None
     OUTPUT: 
-         pipepline : Our pipline model  
+         best_model : Best pipline model  
     '''
     # choosing the model
     base_model = MultinomialNB()
@@ -96,7 +96,19 @@ def build_model():
                          ('tfidf', TfidfTransformer()),
                          ('clf', classifier_model)
                         ])
-    return pipeline
+    
+    # GridSearch to find the best parameters
+    
+    # parameters
+    alphas = np.array([1,0.1,0.01,0.001,0])
+    
+    # Search for best parameters
+    grid = GridSearchCV(estimator=pipeline, 
+                        param_grid=dict(clf__estimator__alpha=alphas))
+    
+    # grid.predict() --> Call predict on the estimator with the best found parameters
+    
+    return grid
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
